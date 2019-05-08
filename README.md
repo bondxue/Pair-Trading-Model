@@ -33,7 +33,7 @@ Store this standard deviation in the database.
 
 6. Use the stock daily prices from *1/2/2019* to *5/3/2019* for backtesting
 
-7. Your program should support manually entered open and close price for a pair to simulate real-time trading
+7. Your program should support manually entered *open* and *close price* for a pair to simulate real-time trading
 
 ## Database Implementation:
 Create 5 tables, `Pairs`, `Pair1Stocks`, `Pair2Stocks`, `PairPrices`, `Trades`
