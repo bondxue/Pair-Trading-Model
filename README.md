@@ -15,7 +15,7 @@ Store this standard deviation in the database.
 
 2. The variable, `k`, has default value 1, but could be changed by user in the pair trading program.
 
-3. Get `Close1d1`, `Close2d1`, `Open1d2`, `Open2d2`, `Close1d2`, and `Close2d2`, where `Close1d1` and `Close2d1` are the closing prices on day d – 1 for stocks 1 and 2, respectively, `Open1d2`, `Open2d2` are the opening prices for day d.
+3. Get `Close1d1`, `Close2d1`, `Open1d2`, `Open2d2`, `Close1d2`, and `Close2d2`, where `Close1d1` and `Close2d1` are the closing prices on day *d–1* for stocks 1 and 2, respectively, `Open1d2`, `Open2d2` are the opening prices for day *d*.
 
 4. `Open Trade`:
 ```Python
