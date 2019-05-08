@@ -4,8 +4,8 @@ FRE7831 Financial Analytics &amp; Big Data term project
 ---------------------------------
 ## Condition and Assumption:
 
-1. `Going short` – the first stock of the pair is short and the other is long. 
-2. `Going long` - the first stock of the pair is long and the other is short.
+1. **Going short** – the first stock of the pair is short and the other is long. 
+2. **Going long** - the first stock of the pair is long and the other is short.
 3. Always trade *10,000* shares for the first stock (`S1`) and determine the shares for the other (`S2`) accordingly: ```N1P1 + N2P2 = 0```
 4. `N1` and `N2` are the numbers of shares of `S1` and `S2`, and `P1` and `P2` are the prices of `S1` and `S2`
 
@@ -36,17 +36,16 @@ Store this standard deviation in the database.
 7. Your program should support manually entered open and close price for a pair to simulate real-time trading
 
 ## Database Implementation:
-```SQL
-    Create 5 tables, Pairs, Pair1Stocks, Pair2Stocks, PairPrices, Trades
-        Pairs:     Pair symbols, volatility, profit_loss (from back_testing), 
-            primary keys: pair symbols
-        Pair1Stocks and Pair2Stocks: the daily market data retrieved for each stock in the pair from 1/2/2008 to 5/3/2019
-            primary keys: symbol and date
-        PairPrices: pair symbols, date, open and close price for each stock
-            primary keys: pair symbols and date
-        Trades: pair symbols, date and profit_loss of each day
-            primary keys: pair symbols and date
- ```
+Create 5 tables, `Pairs`, `Pair1Stocks`, `Pair2Stocks`, `PairPrices`, `Trades`
+* `Pairs`: Pair symbols, volatility, profit_loss (from back_testing), 
+    + *primary keys*: pair symbols
+* `Pair1Stocks` and `Pair2Stocks`: the daily market data retrieved for each stock in the pair from *1/2/2008* to *5/3/2019*
+    + *primary keys*: symbol and date
+* `PairPrices`: pair symbols, date, open and close price for each stock
+    + *primary keys*: pair symbols and date
+* `Trades`: pair symbols, date and profit_loss of each day
+    + *primary keys*: pair symbols and date
+
 Establish **E-R model** to enforce the relationship of primary keys and foreign keys for each table.
 
 ## Python Program:
