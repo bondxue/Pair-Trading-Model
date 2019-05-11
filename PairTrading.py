@@ -10,6 +10,7 @@ import numpy as np
 from sqlalchemy import Column, Integer, Float, String
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
+from sqlalchemy import ForeignKey
 from sqlalchemy import Table
 from sqlalchemy import inspect
 
@@ -19,7 +20,7 @@ myEodKey = "5ba84ea974ab42.45160048"
 startDate = dt.datetime(2019, 1, 2)
 endDate = dt.datetime(2019, 5, 3)
 
-
+# function to retrieve daily market data for each stock
 def get_daily_data(symbol, start=startDate, end=endDate, requestType=requestURL, apiKey=myEodKey):
     symbolURL = str(symbol) + ".US?"
     startURL = "from=" + str(start)
@@ -32,12 +33,16 @@ def get_daily_data(symbol, start=startDate, end=endDate, requestType=requestURL,
         return data
 
 
-# function to create daily market data retrieved from each stock in the pair from 1/2/2008 to 5/3/2019
-def create_pair_table(name, metadata, engine):
+# function to create Pair1Stocks and Pair2Stocks tables
+def create_pairstocks_table(name, metadata, engine):
     tables = metadata.tables.keys()
     if name not in tables:
+        if name == 'Pair1stocks':
+            foreign_key = 'Pairs.symbol1'
+        else:
+            foreign_key = 'Pairs.symbol2'
         table = Table(name, metadata,
-                      Column('symbol', String(50), primary_key=True, nullable=False),
+                      Column('symbol', String(50), ForeignKey(foreign_key), primary_key=True, nullable=False),
                       Column('date', String(50), primary_key=True, nullable=False),
                       Column('open', Float, nullable=False),
                       Column('high', Float, nullable=False),
@@ -47,49 +52,41 @@ def create_pair_table(name, metadata, engine):
                       Column('volume', Integer, nullable=False))
         table.create(engine)
 
-
-# function to create pair prices table
-def create_pair_prices_table(name, metadata, engine):
-    tables = metadata.tables.keys()
-    if name not in tables:
-        table = Table(name, metadata,
-                      Column('symbol1', String(50), primary_key=True, nullable=False),
-                      Column('date1', String(50), primary_key=True, nullable=False),
-                      Column('open1', Float, nullable=False),
-                      Column('close1', Float, nullable=False),
-                      Column('symbol2', String(50), primary_key=True, nullable=False),
-                      Column('date2', String(50), primary_key=True, nullable=False),
-                      Column('open2', Float, nullable=False),
-                      Column('close2', Float, nullable=False))
-        table.create(engine)
-
-
-# function to create trades table
-def create_trades_table(name, metadata, engine):
-    tables = metadata.tables.keys()
-    if name not in tables:
-        table = Table(name, metadata,
-                      Column('symbol1', String(50), primary_key=True, nullable=False),
-                      Column('date1', String(50), primary_key=True, nullable=False),
-                      Column('profit_loss1', Float, nullable=False),
-                      Column('close1', Float, nullable=False),
-                      Column('symbol2', String(50), primary_key=True, nullable=False),
-                      Column('date2', String(50), primary_key=True, nullable=False),
-                      Column('profit_loss2', Float, nullable=False))
-        table.create(engine)
-
-
-# function to create pairs table
+# function to create Pairs table
 def create_pairs_table(name, metadata, engine):
     tables = metadata.tables.keys()
     if name not in tables:
         table = Table(name, metadata,
                       Column('symbol1', String(50), primary_key=True, nullable=False),
-                      Column('volatility1', Float, nullable=False),
-                      Column('profit_loss1', Float, nullable=False),
                       Column('symbol2', String(50), primary_key=True, nullable=False),
-                      Column('volatility2', Float, nullable=False),
-                      Column('profit_loss2', Float, nullable=False))
+                      Column('volatility', Float, nullable=False),
+                      Column('profit_loss', Float, nullable=False))
+        table.create(engine)
+
+# function to create PairPrices table
+def create_pairprices_table(name, metadata, engine):
+    tables = metadata.tables.keys()
+    if name not in tables:
+        table = Table(name, metadata,
+                      Column('symbol1', String(50), ForeignKey("Pair1stocks.symbol1"), primary_key=True, nullable=False),
+                      Column('symbol2', String(50), ForeignKey("Pair2stocks.symbol2"), primary_key=True, nullable=False),
+                      Column('date', String(50), primary_key=True, nullable=False),                      
+                      Column('open1', Float, nullable=False),
+                      Column('close1', Float, nullable=False),                     
+                      Column('open2', Float, nullable=False),
+                      Column('close2', Float, nullable=False))
+        table.create(engine)
+
+
+# function to create Trades table
+def create_trades_table(name, metadata, engine):
+    tables = metadata.tables.keys()
+    if name not in tables:
+        table = Table(name, metadata,
+                      Column('symbol1', String(50), ForeignKey("Pair1stocks.symbol1"), primary_key=True, nullable=False),
+                      Column('symbol2', String(50), ForeignKey("Pair2stocks.symbol2"), primary_key=True, nullable=False),
+                      Column('date', String(50), primary_key=True, nullable=False),
+                      Column('profit_loss', Float, nullable=False))
         table.create(engine)
 
 
@@ -137,6 +134,7 @@ if __name__ == "__main__":
     # build_pair_trading_model()
     e = create_engine('sqlite:///:memory:', echo=True)
     m = MetaData()
-    create_pair_table('pair1', m, e)
-    populate_stock_data(['IBM'], m, e, 'pair1')
-    print(execute_sql_statement('select * from pair1', e).fetchall())
+    create_pairs_table('Pairs', m, e)
+    create_pairstocks_table('Pair1Stocks', m, e)
+    populate_stock_data(['IBM'], m, e, 'Pair1Stocks')
+    print(execute_sql_statement('select * from Pair1Stocks', e).fetchall())
