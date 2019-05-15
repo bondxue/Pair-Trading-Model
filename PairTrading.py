@@ -133,7 +133,7 @@ def build_pair_trading_model(metadata, engine, start_date, end_date, back_testin
     pairs = pd.read_csv('PairTrading0.csv')
     pairs['Volatility'] = 0.0
     pairs['Profit_Loss'] = 0.0
-    pairs.to_sql('pairs', con=engine, if_exists='append', index=False)
+    pairs.to_sql('Pairs', con=engine, if_exists='append', index=False)
     tables = ['Pair1Stocks', 'Pair2Stocks']
 
     for table in tables:
@@ -216,10 +216,10 @@ class StockPair:
         for key, index in zip(self.trades.keys(), range(0, trades_matrix.shape[0])):
             self.trades[key] = trades_matrix[index]
 
-        return pd.DataFrame(trades_matrix[:, range(4, trades_matrix.shape[1])], columns=['Qty1', 'Qty2', 'P/L'])
+        return pd.DataFrame(trades_matrix[:, range(4, trades_matrix.shape[1])], columns=['Qty1', 'Qty2', 'Profit_Loss'])
 
 def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date):
-    engine.execute('Drop Table if exists Table;')
+    engine.execute('Drop Table if exists Trades;')
     stock_pair_map = dict()
 
     select_st = 'SELECT Ticker1, Ticker2, Volatility From Pairs;'
@@ -242,7 +242,7 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
         stock_pair_map[aKey].createTrade(result_df.at[index, 'Date'],  result_df.at[index, 'Open1'], result_df.at[index, 'Close1'],
                                          result_df.at[index, 'Open2'], result_df.at[index, 'Close2'])
 
-    trades_df = pd.DataFrame(columns=['Qty1', 'Qty2', 'P/L'])
+    trades_df = pd.DataFrame(columns=['Qty1', 'Qty2', 'Profit_Loss'])
     for key, value in stock_pair_map.items():
         trades_df = trades_df.append(value.updateTrades(), ignore_index=True)
         print(trades_df)
@@ -285,7 +285,7 @@ if __name__ == "__main__":
     # populate_stock_data(['IBM'], engine, 'Pair1Stocks',start_date, end_date)
     build_pair_trading_model(metadata, engine, start_date, end_date, back_testing_start_date)
     # print(execute_sql_statement('select * from Pair1Stocks', engine).fetchall())
-
+    back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date)
 
     
 
