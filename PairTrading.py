@@ -137,7 +137,7 @@ def build_pair_trading_model(metadata, engine, start_date, end_date, back_testin
 
     # create stockpairs table
     create_stockpairs_table('Pairs', metadata, engine)
-    pairs = pd.read_csv('PairTrading0.csv')
+    pairs = pd.read_csv('PairTrading.csv')
     pairs['Volatility'] = 0.0
     pairs['Profit_Loss'] = 0.0
     pairs.to_sql('Pairs', con=engine, if_exists='append', index=False)
@@ -255,10 +255,10 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
     trades_df = pd.DataFrame(columns=['Qty1', 'Qty2', 'Profit_Loss'])
     for key, value in stock_pair_map.items():
         trades_df = trades_df.append(value.updateTrades(), ignore_index=True)
-        print(trades_df)
+        # print(trades_df)
         np.set_printoptions(precision=2, floatmode='fixed')
         np.set_printoptions(suppress=True)
-        print(key, value)
+        # print(key, value)
 
         table = metadata.tables['Pairs']
         update_st = table.update().values(Profit_Loss=value.total_profit_loss).where(
@@ -272,12 +272,7 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
     result_df.to_sql('Trades', con=engine, if_exists='append', index=False)
 
 
-# @app.route('/')
-# def index():
-#     pairs = pd.read_csv(location_of_pairs)
-#     pairs = pairs.transpose()
-#     list_of_pairs = [pairs[i] for i in pairs]
-#     return render_template("index.html", pair_list=list_of_pairs)
+
 #
 # .....
 # .....
@@ -291,4 +286,4 @@ if __name__ == "__main__":
     # populate_stock_data(['IBM'], engine, 'Pair1Stocks',start_date, end_date)
     build_pair_trading_model(metadata, engine, start_date, end_date, back_testing_start_date)
     # print(execute_sql_statement('select * from Pair1Stocks', engine).fetchall())
-    # back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date)
+    back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date)
