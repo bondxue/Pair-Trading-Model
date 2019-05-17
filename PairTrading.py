@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 
 import json
 import datetime as dt
@@ -13,12 +13,9 @@ from sqlalchemy import create_engine
 from sqlalchemy import MetaData
 from sqlalchemy import Table
 from sqlalchemy import inspect
-# from flask import Flask, flash, redirect, render_template, request, url_for
 
 # location_of_pairs = 'csv/PairTrading.csv'
 location_of_pairs = 'C://Users//mengh//Dropbox//FRE7831FinancialAnalyticsBigData//Pair-Trading-Model'
-
-# app = Flask(__name__)
 
 engine = create_engine('sqlite:///PairTrading.db')
 conn = engine.connect()
@@ -26,18 +23,19 @@ conn.execute("PRAGMA foreign_keys = ON")
 
 metadata = MetaData()
 metadata.reflect(bind=engine)
-    
+
 start_date = dt.date(2018, 1, 1)
 end_date = dt.datetime.now()
-    
-back_testing_start_date = "2018-12-31"
-back_testing_end_date = "2019-01-31"
+
+back_testing_start_date = "2019-01-02"
+back_testing_end_date = "2019-05-03"
 k = 1
-    
-def get_daily_data(symbol, 
-                   start=dt.datetime(2018,12,1), 
-                   end=dt.date.today(), 
-                   requestURL='https://eodhistoricaldata.com/api/eod/', 
+
+
+def get_daily_data(symbol,
+                   start=dt.datetime(2018, 12, 1),
+                   end=dt.date.today(),
+                   requestURL='https://eodhistoricaldata.com/api/eod/',
                    apiKey='5ba84ea974ab42.45160048'):
     symbolURL = str(symbol) + '.US?'
     startURL = 'from=' + str(start)
@@ -49,6 +47,7 @@ def get_daily_data(symbol,
         data = json.load(req)
         return data
 
+
 def create_stockpairs_table(table_name, metadata, engine):
     table = Table(table_name, metadata,
                   Column('Ticker1', String(50), primary_key=True, nullable=False),
@@ -57,7 +56,8 @@ def create_stockpairs_table(table_name, metadata, engine):
                   Column('Profit_Loss', Float, nullable=False),
                   extend_existing=True)
     table.create(engine)
-                       
+
+
 def create_pair_table(table_name, metadata, engine):
     tables = metadata.tables.keys()
     if table_name not in tables:
@@ -76,30 +76,32 @@ def create_pair_table(table_name, metadata, engine):
                       Column('Volume', Integer, nullable=False))
         table.create(engine)
 
+
 def create_pairprices_table(table_name, metadata, engine):
     table = Table(table_name, metadata,
-                Column('Symbol1', String(50), ForeignKey("Pair1Stocks.Symbol"), primary_key=True, nullable=False),
-                Column('Symbol2', String(50), ForeignKey("Pair2Stocks.Symbol"), primary_key=True, nullable=False),
-                Column('Date', String(50), primary_key=True, nullable=False),
-                Column('Open1', Float, nullable=False),
-                Column('Close1', Float, nullable=False),
-                Column('Open2', Float, nullable=False),
-                Column('Close2', Float, nullable=False),
-                extend_existing=True)
+                  Column('Symbol1', String(50), ForeignKey("Pair1Stocks.Symbol"), primary_key=True, nullable=False),
+                  Column('Symbol2', String(50), ForeignKey("Pair2Stocks.Symbol"), primary_key=True, nullable=False),
+                  Column('Date', String(50), primary_key=True, nullable=False),
+                  Column('Open1', Float, nullable=False),
+                  Column('Close1', Float, nullable=False),
+                  Column('Open2', Float, nullable=False),
+                  Column('Close2', Float, nullable=False),
+                  extend_existing=True)
     table.create(engine)
+
 
 def create_trades_table(table_name, metadata, engine):
     table = Table(table_name, metadata,
-                      Column('Symbol1', String(50), ForeignKey("Pair1Stocks.Symbol"), primary_key=True, nullable=False),
-                      Column('Symbol2', String(50), ForeignKey("Pair2Stocks.Symbol"), primary_key=True, nullable=False),
-                      Column('Date', String(50), primary_key=True, nullable=False),
-                      Column('Open1', Float, nullable=False),
-                      Column('Close1', Float, nullable=False),
-                      Column('Open2', Float, nullable=False),
-                      Column('Close2', Float, nullable=False),
-                      Column('Qty1', Integer, nullable=False),
-                      Column('Qty2', Integer, nullable=False),
-                      Column('Profit_Loss', Float, nullable=False),
+                  Column('Symbol1', String(50), ForeignKey("Pair1Stocks.Symbol"), primary_key=True, nullable=False),
+                  Column('Symbol2', String(50), ForeignKey("Pair2Stocks.Symbol"), primary_key=True, nullable=False),
+                  Column('Date', String(50), primary_key=True, nullable=False),
+                  Column('Open1', Float, nullable=False),
+                  Column('Close1', Float, nullable=False),
+                  Column('Open2', Float, nullable=False),
+                  Column('Close2', Float, nullable=False),
+                  Column('Qty1', Integer, nullable=False),
+                  Column('Qty2', Integer, nullable=False),
+                  Column('Profit_Loss', Float, nullable=False),
                   extend_existing=True)
     table.create(engine)
 
@@ -110,32 +112,38 @@ def clear_a_table(table_name, metadata, engine):
     delete_st = table.delete()
     conn.execute(delete_st)
 
+
 def execute_sql_statement(sql_st, engine):
     result = engine.execute(sql_st)
     return result
 
+
+# function to pouplate data into pair1stocks and pair2stocks
 def populate_stock_data(tickers, engine, table_name, start_date, end_date):
     colume_names = ['Symbol', 'Date', 'Open', 'High', 'Low', 'Close', 'Adjusted_Close', 'Volume']
     price_data = []
     for ticker in tickers:
         stock = get_daily_data(ticker, start_date, end_date)
         for stock_data in stock:
-            price_data.append([ticker, stock_data['date'], stock_data['open'],stock_data['high'],stock_data['low'],
-                               stock_data['close'],stock_data['adjusted_close'],stock_data['volume']])
+            price_data.append([ticker, stock_data['date'], stock_data['open'], stock_data['high'], stock_data['low'],
+                               stock_data['close'], stock_data['adjusted_close'], stock_data['volume']])
         print(price_data)
     stocks = pd.DataFrame(price_data, columns=colume_names)
     stocks.to_sql(table_name, con=engine, if_exists='append', index=False)
 
+
 def build_pair_trading_model(metadata, engine, start_date, end_date, back_testing_start_date):
     engine.execute('Drop Table if exists Pairs;')
-    create_stockpairs_table('Pairs', metadata, engine)
 
+    # create stockpairs table
+    create_stockpairs_table('Pairs', metadata, engine)
     pairs = pd.read_csv('PairTrading0.csv')
     pairs['Volatility'] = 0.0
     pairs['Profit_Loss'] = 0.0
     pairs.to_sql('Pairs', con=engine, if_exists='append', index=False)
-    tables = ['Pair1Stocks', 'Pair2Stocks']
 
+    # create pair1stocks and pair2stocks tables
+    tables = ['Pair1Stocks', 'Pair2Stocks']
     for table in tables:
         create_pair_table(table, metadata, engine)
     inspector = inspect(engine)
@@ -176,7 +184,6 @@ def build_pair_trading_model(metadata, engine, start_date, end_date, back_testin
     execute_sql_statement('DROP Table if exists tmp', engine)
 
 
-
 class StockPair:
     def __init__(self, symbol1, symbol2, volatility, k, start_date, end_date):
         self.ticker1 = symbol1
@@ -185,30 +192,30 @@ class StockPair:
         self.k = k
         self.start_date = start_date
         self.end_date = end_date
-        self.trades = {}
+        self.trades = {}  # dict: key: date, value: list of open1, open2, close1, close2, qty1, qty2, profit_loss
         self.total_profit_loss = 0.0
-        
+
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__) + "\n"
-    
+
     def __repr__(self):
         return str(self.__class__) + ": " + str(self.__dict__) + "\n"
-    
-    def createTrade(self, date, open1, open2, close1, close2, qty1 = 0, qty2 = 0, profit_loss = 0.0):
-        self.trades[date] = np.array([open1, open2, close1, close2, qty1, qty2, profit_loss])
-        
+
+    def createTrade(self, date, open1, close1, open2, close2, qty1=0, qty2=0, profit_loss=0.0):
+        self.trades[date] = np.array([open1, close1, open2, close2, qty1, qty2, profit_loss])
+
     def updateTrades(self):
         trades_matrix = np.array(list(self.trades.values()))
-        for index in range(1, trades_matrix.shape[0]):
-            if abs(trades_matrix[index-1, 1]/trades_matrix[index-1, 3] - trades_matrix[index, 0]/trades_matrix[index, 2])   \
-                > self.k * self.volatility:
+        for index in range(1, trades_matrix.shape[0]):  # all dates
+            if abs(trades_matrix[index - 1, 1] / trades_matrix[index - 1, 3] - trades_matrix[index, 0] / trades_matrix[
+                index, 2]) > self.k * self.volatility:
                 trades_matrix[index, 4] = -10000
-                trades_matrix[index, 5] = int(10000 * (trades_matrix[index, 0]/trades_matrix[index, 2]))
+                trades_matrix[index, 5] = int(10000 * (trades_matrix[index, 0] / trades_matrix[index, 2]))
             else:
                 trades_matrix[index, 4] = 10000
-                trades_matrix[index, 5] = int(-10000 * (trades_matrix[index, 0]/trades_matrix[index, 2]))
-            trades_matrix[index, 6] = trades_matrix[index, 4] * (trades_matrix[index, 1] - trades_matrix[index, 0])     \
-                                    + trades_matrix[index, 5] * (trades_matrix[index, 3] - trades_matrix[index, 2])
+                trades_matrix[index, 5] = int(-10000 * (trades_matrix[index, 0] / trades_matrix[index, 2]))
+            trades_matrix[index, 6] = trades_matrix[index, 4] * (trades_matrix[index, 1] - trades_matrix[index, 0]) \
+                                      + trades_matrix[index, 5] * (trades_matrix[index, 3] - trades_matrix[index, 2])
             trades_matrix[index, 6] = round(trades_matrix[index, 6], 2)
 
             self.total_profit_loss += trades_matrix[index, 6]
@@ -217,6 +224,7 @@ class StockPair:
             self.trades[key] = trades_matrix[index]
 
         return pd.DataFrame(trades_matrix[:, range(4, trades_matrix.shape[1])], columns=['Qty1', 'Qty2', 'Profit_Loss'])
+
 
 def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date):
     engine.execute('Drop Table if exists Trades;')
@@ -229,17 +237,19 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
 
     for index, row in result_df.iterrows():
         aKey = (row['Ticker1'], row['Ticker2'])
-        stock_pair_map[aKey] = StockPair(row['Ticker1'], row['Ticker2'], row['Volatility'], k, back_testing_start_date, back_testing_end_date)
+        stock_pair_map[aKey] = StockPair(row['Ticker1'], row['Ticker2'], row['Volatility'], k, back_testing_start_date,
+                                         back_testing_end_date)
 
     select_st = "Select * From PairPrices WHERE Date >= " + "\"" + back_testing_start_date + "\"" + \
-        " AND Date <= " + "\"" + back_testing_end_date + "\"" + ";"
+                " AND Date <= " + "\"" + back_testing_end_date + "\"" + ";"
     result_set = execute_sql_statement(select_st, engine)
     result_df = pd.DataFrame(result_set.fetchall())
     result_df.columns = result_set.keys()
 
     for index in range(0, result_df.shape[0]):
         aKey = (result_df.at[index, 'Symbol1'], result_df.at[index, 'Symbol2'])
-        stock_pair_map[aKey].createTrade(result_df.at[index, 'Date'],  result_df.at[index, 'Open1'], result_df.at[index, 'Close1'],
+        stock_pair_map[aKey].createTrade(result_df.at[index, 'Date'], result_df.at[index, 'Open1'],
+                                         result_df.at[index, 'Close1'],
                                          result_df.at[index, 'Open2'], result_df.at[index, 'Close2'])
 
     trades_df = pd.DataFrame(columns=['Qty1', 'Qty2', 'Profit_Loss'])
@@ -252,7 +262,7 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
 
         table = metadata.tables['Pairs']
         update_st = table.update().values(Profit_Loss=value.total_profit_loss).where(
-            and_(table.c.Ticker1==value.ticker1, table.c.Ticker2==value.ticker2))
+            and_(table.c.Ticker1 == value.ticker1, table.c.Ticker2 == value.ticker2))
         engine.execute(update_st)
 
     result_df = result_df.join(trades_df)
@@ -262,10 +272,6 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
     result_df.to_sql('Trades', con=engine, if_exists='append', index=False)
 
 
-
-
-
-        
 # @app.route('/')
 # def index():
 #     pairs = pd.read_csv(location_of_pairs)
@@ -275,7 +281,7 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
 #
 # .....
 # .....
-    
+
 if __name__ == "__main__":
     # app.run()
     # build_pair_trading_model()
@@ -285,10 +291,4 @@ if __name__ == "__main__":
     # populate_stock_data(['IBM'], engine, 'Pair1Stocks',start_date, end_date)
     build_pair_trading_model(metadata, engine, start_date, end_date, back_testing_start_date)
     # print(execute_sql_statement('select * from Pair1Stocks', engine).fetchall())
-    back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date)
-
-    
-
-    
-    
-    
+    # back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date)

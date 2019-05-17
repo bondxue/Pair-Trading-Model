@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="607dafa8-c753-4cbe-99e1-7db15d3b5251" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PairTrading.db" beforeDir="false" afterPath="$PROJECT_DIR$/PairTrading.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PairTrading.py" beforeDir="false" afterPath="$PROJECT_DIR$/PairTrading.py" afterDir="false" />
     </list>
@@ -15,36 +16,37 @@
     <session id="64020685">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.3" value="1" />
-          <entry key="project.open.time.5" value="2" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.5" value="4" />
+          <entry key="project.opened" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
+          <entry key="csv" value="2" />
           <entry key="gitignore" value="1" />
           <entry key="py" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="PLAIN_TEXT" value="3" />
           <entry key="Python" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="25" />
-          <entry key="py" value="3221" />
+          <entry key="py" value="3555" />
           <entry key="txt" value="72" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="72" />
-          <entry key="Python" value="3246" />
+          <entry key="Python" value="3580" />
         </counts>
       </usages-collector>
     </session>
@@ -54,8 +56,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PairTrading.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="619">
-              <caret line="289" column="4" lean-forward="true" selection-start-line="289" selection-start-column="4" selection-end-line="289" selection-end-column="4" />
+            <state relative-caret-position="720">
+              <caret line="271" column="75" lean-forward="true" selection-start-line="271" selection-start-column="75" selection-end-line="271" selection-end-column="75" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
@@ -64,12 +66,17 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../PairTrading.py">
+        <entry file="file://$PROJECT_DIR$/PairTrading0.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="864">
-              <caret line="135" column="4" selection-start-line="135" selection-start-column="4" selection-end-line="141" selection-end-column="75" />
+            <state relative-caret-position="30">
+              <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="7" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PairTrading.csv">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -107,18 +114,17 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="718" />
-    <option name="y" value="70" />
-    <option name="width" value="1520" />
-    <option name="height" value="1245" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="1080" />
+    <option name="y" value="175" />
+    <option name="width" value="2567" />
+    <option name="height" value="2072" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -130,6 +136,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -198,15 +205,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="2575" height="1415" extended-state="6" />
+    <frame x="720" y="117" width="1711" height="1381" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.016541945" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11940298" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49932706" visible="true" weight="0.39360872" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49932706" visible="true" weight="0.2986389" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.5120226" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -233,13 +240,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../PairTrading.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="135" column="4" selection-start-line="135" selection-start-column="4" selection-end-line="141" selection-end-column="75" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/pandas/core/generic.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -269,10 +269,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../PairTrading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="624">
+          <caret line="135" column="4" selection-start-line="135" selection-start-column="4" selection-end-line="141" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PairTrading.csv">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PairTrading0.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/PairTrading.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="619">
-          <caret line="289" column="4" lean-forward="true" selection-start-line="289" selection-start-column="4" selection-end-line="289" selection-end-column="4" />
+        <state relative-caret-position="720">
+          <caret line="271" column="75" lean-forward="true" selection-start-line="271" selection-start-column="75" selection-end-line="271" selection-end-column="75" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
           </folding>
