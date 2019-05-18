@@ -25,10 +25,11 @@ metadata = MetaData()
 metadata.reflect(bind=engine)
 
 start_date = dt.date(2018, 1, 1)
-end_date = dt.datetime.now()
+# end_date = dt.datetime.now()
+end_date = dt.date(2019, 1, 31)
 
 back_testing_start_date = "2019-01-02"
-back_testing_end_date = "2019-05-03"
+back_testing_end_date = "2019-05-07"
 k = 1
 
 
@@ -158,12 +159,16 @@ def build_pair_trading_model(metadata, engine, start_date, end_date, back_testin
     engine.execute('Drop Table if exists PairPrices;')
     create_pairprices_table('PairPrices', metadata, engine)
 
-    select_st = "SELECT Pairs.Ticker1 as Symbol1, Pairs.Ticker2 as Symbol2, \
-                     Pair1Stocks.Date as Date, Pair1Stocks.Open as Open1, Pair1Stocks.Adjusted_close as Close1, \
-                     Pair2Stocks.Open as Open2, Pair2Stocks.Adjusted_close as Close2 \
-                     FROM Pairs, Pair1Stocks, Pair2Stocks \
-                     WHERE (Pairs.Ticker1 = Pair1Stocks.Symbol) and (Pairs.Ticker2 = Pair2Stocks.Symbol) and (Pair1Stocks.Date = Pair2Stocks.Date) \
-                     ORDER BY Symbol1, Symbol2;"
+    select_st = "SELECT Pairs.Ticker1 as Symbol1, " \
+                "Pairs.Ticker2 as Symbol2, \
+                 Pair1Stocks.Date as Date, " \
+                "Pair1Stocks.Open as Open1, " \
+                "Pair1Stocks.Adjusted_close as Close1, \
+                 Pair2Stocks.Open as Open2, " \
+                "Pair2Stocks.Adjusted_close as Close2 \
+            FROM Pairs, Pair1Stocks, Pair2Stocks \
+            WHERE (Pairs.Ticker1 = Pair1Stocks.Symbol) and (Pairs.Ticker2 = Pair2Stocks.Symbol) and (Pair1Stocks.Date = Pair2Stocks.Date) \
+            ORDER BY Symbol1, Symbol2;"
 
     result_set = execute_sql_statement(select_st, engine)
     result_df = pd.DataFrame(result_set.fetchall())
@@ -275,9 +280,9 @@ def back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_
 def EnterPairTrade():
     print("Options:\n 1 - Select k (default k=1)\n 2 - Run Back Test \n 3- Enter a Pair Trade \n 4. Exit. \n")
     loop = 1
-    case='0'
+    case = '0'
     while loop:
-        case=input('')
+        case = input('')
         if case == '1':
             k = int(input('k = '))
         elif case == '2':
@@ -287,41 +292,31 @@ def EnterPairTrade():
             print("Enter a pair Trade:")
             Ticker1 = input('Ticker1: ')
             Ticker2 = input('Ticker2: ')
-            close1_previous= float(input("Ticker1 Previous Day Close Price: "))
+            close1_previous = float(input("Ticker1 Previous Day Close Price: "))
             close2_previous = float(input("Ticker2 Previous Day Close Price: "))
             open1 = float(input("Ticker1 Open Price: "))
             open2 = float(input("Ticker2 Open Price: "))
             close1 = float(input("Ticker1 Close Price: "))
             close2 = float(input("Ticker2 Close Price: "))
-            select_st = "Select Volatility from Pairs where Ticker1 = \"" + Ticker1 + "\" and Ticker2 = \""  + Ticker2 + "\";"
+            select_st = "Select Volatility from Pairs where Ticker1 = \"" + Ticker1 + "\" and Ticker2 = \"" + Ticker2 + "\";"
             result_set = execute_sql_statement(select_st, engine)
             result_df = pd.DataFrame(result_set.fetchall())
             result_df.columns = result_set.keys()
             sigma = result_df.iloc[0]['Volatility']
-            if abs(close1_previous/close2_previous - open1/open2) > k* sigma:
+            if abs(close1_previous / close2_previous - open1 / open2) > k * sigma:
                 vol1 = -10000
-                vol2 = int(10000* (open1/open2))
+                vol2 = int(10000 * (open1 / open2))
             else:
                 vol1 = 10000
-                vol2 = int(-10000* (open1/open2))
-            profit_loss = round(vol1 * (open1 - close1) + vol2 * (open2 - close2),2)
+                vol2 = int(-10000 * (open1 / open2))
+            profit_loss = round(vol1 * (open1 - close1) + vol2 * (open2 - close2), 2)
             print(Ticker1, Ticker2)
             print("delta = {d}, k = {k}".format(d=sigma, k=k))
             print("vol1 = {v1}, vol2 = {v2}, P/L = {p}".format(v1=vol1, v2=vol2, p=profit_loss))
         elif case == '4':
-            option=0
+            option = 0
             print('exit')
 
-
-
-
-
-
-
-
-#
-# .....
-# .....
 
 if __name__ == "__main__":
     # app.run()
