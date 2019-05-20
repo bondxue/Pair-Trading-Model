@@ -128,7 +128,6 @@ def populate_stock_data(tickers, engine, table_name, start_date, end_date):
         for stock_data in stock:
             price_data.append([ticker, stock_data['date'], stock_data['open'], stock_data['high'], stock_data['low'],
                                stock_data['close'], stock_data['adjusted_close'], stock_data['volume']])
-        print(price_data)
     stocks = pd.DataFrame(price_data, columns=colume_names)
     stocks.to_sql(table_name, con=engine, if_exists='append', index=False)
 
@@ -136,7 +135,7 @@ def populate_stock_data(tickers, engine, table_name, start_date, end_date):
 def build_pair_trading_model(metadata, engine, start_date, end_date, back_testing_start_date):
     engine.execute('Drop Table if exists Pairs;')
 
-    # create stockpairs table
+    # create Pairs table and store pair dataframe into Pairs table
     create_stockpairs_table('Pairs', metadata, engine)
     pairs = pd.read_csv('PairTrading.csv')
     pairs['Volatility'] = 0.0
@@ -150,15 +149,19 @@ def build_pair_trading_model(metadata, engine, start_date, end_date, back_testin
     inspector = inspect(engine)
     print(inspector.get_table_names())
 
+    # clear pair1stocks and pair2stocks tables
     for table in tables:
         clear_a_table(table, metadata, engine)
 
+    # populate stock data into pair1stocks and pair2stocks tables
     populate_stock_data(pairs['Ticker1'].unique(), engine, 'Pair1Stocks', start_date, end_date)
     populate_stock_data(pairs['Ticker2'].unique(), engine, 'Pair2Stocks', start_date, end_date)
 
+    # create pairprices table
     engine.execute('Drop Table if exists PairPrices;')
     create_pairprices_table('PairPrices', metadata, engine)
 
+    # select data from 3 tables and saved as dataframe and stored into the pairprice table
     select_st = "SELECT Pairs.Ticker1 as Symbol1, " \
                 "Pairs.Ticker2 as Symbol2, \
                  Pair1Stocks.Date as Date, " \
@@ -173,7 +176,10 @@ def build_pair_trading_model(metadata, engine, start_date, end_date, back_testin
     result_set = execute_sql_statement(select_st, engine)
     result_df = pd.DataFrame(result_set.fetchall())
     result_df.columns = result_set.keys()
+    print(result_df)
     result_df.to_sql('PairPrices', con=engine, if_exists='append', index=False)
+
+
 
     select_st = "SELECT * FROM PairPrices WHERE Date <= " + "\"" + back_testing_start_date + "\";"
     result_set = execute_sql_statement(select_st, engine)
@@ -331,3 +337,4 @@ if __name__ == "__main__":
     # back_testing(metadata, engine, k, back_testing_start_date, back_testing_end_date)
 
     EnterPairTrade()
+
