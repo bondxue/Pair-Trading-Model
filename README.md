@@ -50,6 +50,7 @@ Establish **E-R model** to enforce the relationship of primary keys and foreign 
 
 ### Database Schema
 
+<img src="https://github.com/bondxue/Pair-Trading-Model/blob/master/images/schema.PNG" width="700">
 
 ### Python Program:
 The database should be a persistent component of your Python program, and all the database queries should be launched from your Python program
