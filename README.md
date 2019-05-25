@@ -35,7 +35,10 @@ Store this standard deviation in the database.
 
 7. Your program should support manually entered *open* and *close price* for a pair to simulate real-time trading
 
-### Database Implementation:
+### Database Schema
+
+<img src="https://github.com/bondxue/Pair-Trading-Model/blob/master/images/schema.PNG" width="700">
+
 Create 5 tables, `Pairs`, `Pair1Stocks`, `Pair2Stocks`, `PairPrices`, `Trades`
 * `Pairs`: Pair symbols, volatility, profit_loss (from back_testing), 
     + *primary keys*: pair symbols
@@ -46,11 +49,27 @@ Create 5 tables, `Pairs`, `Pair1Stocks`, `Pair2Stocks`, `PairPrices`, `Trades`
 * `Trades`: pair symbols, date and profit_loss of each day
     + *primary keys*: pair symbols and date
 
-Establish **E-R model** to enforce the relationship of primary keys and foreign keys for each table.
+### Pair Trading Program Implementation
+In the Program `PairTrading.py` has one function `EnterPairTrade()` allowing an investor to enter a pair trade. For example:
 
-### Database Schema
-
-<img src="https://github.com/bondxue/Pair-Trading-Model/blob/master/images/schema.PNG" width="700">
-
-### Python Program:
-The database should be a persistent component of your Python program, and all the database queries should be launched from your Python program
+```Python
+Enter a pair trade: 
+ticker1: AAPL 
+ticker2: HPQ 
+Ticker 1 Previous Day Close Price: 606.81 
+Ticker 2 Previous Day Close Price: 17.66 
+Ticker 1 Open Price: 602.84 
+Ticker 2 Open Price: 17.61 
+Ticker 1 Close Price: 607.79 
+Ticker 2 Close Price: 17.55 
+AAPL HPQ 
+delta = 7.14 k = 1 
+vol1 = 10000 vol2 = 342328 P/L = 70039.7
+```
+The PairTrading program offers users a menu of options:
+```Python
+1. Select k (default k = 1). 
+2. Run Back Test. 
+3. Enter a Pair Trade.
+4. Exit
+```
